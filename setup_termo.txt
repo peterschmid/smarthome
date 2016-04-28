@@ -1,0 +1,12 @@
+sudo nano /boot/config.txt
+#add line
+dtoverlay=w1-gpio,gpiopin=4
+dtoverlay=w1-gpio,gpiopin=4,pullup=on
+
+sudo reboot
+
+# /etc/modules add lines
+w1-gpio pullup=1
+w1-therm
+
+ls /sys/bus/w1/devices
