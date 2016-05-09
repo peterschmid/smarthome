@@ -90,8 +90,11 @@ def clearAlarm(tempList, threshold):
   return all(i>=threshold for i in tempList[0:-2])
 
 valuesToCheck = 5
-posOfFloorInValue = 4
-tempThreshold = 35
+#[0]         [1]       [2]     [3]     [4]      [5]       [6]      [7]        [8]        [9]
+#Date;       Time;     AirIn;  AirOut; FloorIn; FloorOut; SolarUp; SolarDown; WarmWater; FloorIn2
+#09.05.2016; 00:00:01; 20.812; 20.812; 23.125;  21.562;   18.750;  18.750;    56.562;    23.062
+posOfFloorInValue = 9
+tempThreshold = 40
 
 tempStr =  extractTemp(tail(filenameData, valuesToCheck +3),posOfFloorInValue)
 temp = toNumbers(tempStr)

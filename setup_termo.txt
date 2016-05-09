@@ -10,3 +10,13 @@ w1-gpio pullup=1
 w1-therm
 
 ls /sys/bus/w1/devices
+
+# set Timezone
+sudo mv /etc/localtime /etc/localtime.old
+sudo ln -s /usr/share/zoneinfo/Europe/Zuerich /etc/localtime
+
+# time
+tzselect
+# add line to home/.profile
+TZ='Europe/Zurich'; export TZ
+
