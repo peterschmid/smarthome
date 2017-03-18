@@ -9,28 +9,26 @@ filenameData = str(sys.argv[1])
 
 #print filenameData
 
-def readMailAdrAndPw():
+def readFromMailAdrAndPwAndToMailAdr():
   f=open("mail.txt", "r")
   content = f.readlines()
   content = [x.strip('\n') for x in content]
-  return content[0], content[1]
+  return content[0], content[1], content[2]
 
 def sendMail(sub, text):
-  # Prepare sending Mail
-  fromaddr = 'pedrrero@gmail.com'
-  toaddrs  = 'peter.r.schmid@gmail.com'
+  # Prepare sending Mail and credentians
+  fromaddr, password, toaddr =  readFromMailAdrAndPwAndToMailAdr()
+  username = fromaddr
+
   #sub = 'Temperaturwarung'
   #text = 'Die Temperatur ist zu hoch!'
   msg = 'Subject: %s\n\n%s' % (sub, text)
-
-  # Credentials (if needed)
-  username, password =  readMailAdrAndPw()
 
   # The actual mail send
   server = smtplib.SMTP('smtp.gmail.com:587')
   server.starttls()
   server.login(username,password)
-  server.sendmail(fromaddr, toaddrs, msg)
+  server.sendmail(fromaddr, toaddr, msg)
   server.quit()
 
 def tail( filename, lines=20 ):
@@ -74,11 +72,12 @@ def extractTemp(text, pos):
   lines = text.split('\n')
   values = []
   for line in lines:
+    # fails if LF is at end of file
     values.append(line.split(';')[pos]) 
   return values
 
 def raisAlarm(tempList, threshold):
-  #print tempList
+  print tempList
   # check if only new values are higher
   if tempList[0]>=threshold:
     return False
