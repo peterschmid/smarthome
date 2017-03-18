@@ -12,16 +12,16 @@ if len(sys.argv) != 2:
 filenamePic = str(sys.argv[1])
 
 #print filenameData
-def readMailAdrAndPw():
+def readFromMailAdrAndPwAndToMailAdr():
   f=open("mail.txt", "r")
   content = f.readlines()
   content = [x.strip('\n') for x in content]
-  return content[0], content[1]
+  return content[0], content[1], content[2]
 
 def sendMail(sub, text, filename):
-  # Prepare sending Mail
-  fromaddr = 'pedrrero@gmail.com'
-  toaddr  = 'peter.r.schmid@gmail.com'
+  # Prepare sending Mail and credentians
+  fromaddr, password, toaddr =  readFromMailAdrAndPwAndToMailAdr()
+  username = fromaddr
 
   # Create the root message and fill in the from, to, and subject headers
   msg = MIMEMultipart()
@@ -34,9 +34,6 @@ def sendMail(sub, text, filename):
   image = MIMEImage(fp.read(), filename)
   fp.close()
   msg.attach(image)
-
-  #credentials (if needed)
-  username, password =  readMailAdrAndPw()
 
   # The actual mail send
   server = smtplib.SMTP('smtp.gmail.com:587')
