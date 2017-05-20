@@ -19,5 +19,8 @@ if [ -n "$LEVEL_CM" ]; then
     echo "$DATETIME;$LEVEL_CM" >> $FILENAME
 fi
 
+# check level and send mail
+./waterlevelNotify.py
+
 #send level value to ubidots skript
 #./sendtoubidots.py $LEVEL_CM
