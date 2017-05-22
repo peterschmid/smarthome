@@ -77,9 +77,9 @@ def extractLevel(text, pos):
 
 def raisAlarm(valList, threshold):
   # check if only new values are higher
-  if valList[0]>=threshold:
+  if valList[-1]<=threshold:
     return False
-  return all(i>=threshold for i in valList[1:])
+  return all(i<=threshold for i in valList[0:-1])
 
 def clearAlarm(valList, threshold):
   # check if only new value is lower
@@ -87,15 +87,29 @@ def clearAlarm(valList, threshold):
     return False
   return all(i>=threshold for i in valList[0:-1])
 
-def calculateThreshold(level):
+def calculateThreshold(level, isTrendRising):
   # calcualte threshold based on level
   threshold = 70
   # threshold array [fixLevel,newThreshold]
-  thresholds = [[75,80],[85,90],[95,100],[105,110],[115,120],[125,130],[135,140],[145,150],[155,160],[165,170]]
-  for values in thresholds:
-    if level > values[0]:
-       threshold = values[1]
+  #thresholds = [[75,80],[85,90],[95,100],[105,110],[115,120],[125,130],[135,140],[145,150],[155,160],[165,170]]
+  thresholds = [[80,75],[90,85],[100,95],[110,105],[120,115],[130,125],[140,135],[150,145],[160,155],[170,165]]
+  if isTrendRising:
+    for values in thresholds:
+      if level > values[0]:
+        threshold = values[0]
+  else:
+    for values in reversed(thresholds):
+      if level < values[1]:
+        threshold = values[1]
   return threshold
+
+def isTrendRisingFunc(valList, level):
+  # average level smaller than last val
+  avgList = valList[0:-1]
+  avg = 1
+  if avgList:
+    avg = sum(avgList)/float(len(avgList))
+  return (avg < valList[-1])
 
 valuesToCheck = 3
 #[0]         [1]       [2]
@@ -107,10 +121,11 @@ posOfLevelInLine = 2
 levelsStr =  extractLevel(tail(filenameData, valuesToCheck+2),posOfLevelInLine)
 levels = toNumbers(levelsStr)
 # last level is in last position
-levelThreshold = calculateThreshold(levels[-1])
+levelThreshold = calculateThreshold(levels[-1], isTrendRisingFunc(levels,levels[-1]))
 
 #print levelThreshold
 #print levels
+
 if (len(levels)>valuesToCheck and raisAlarm(levels, levelThreshold)):
   #print "Send Mail above " + str(levelThreshold)
   sendMail("Wasser Warnung " + str(levelThreshold) + "cm", "Achtung der Wasserpegel ist aktuell auf " + str(max(levels)) + "cm angestiegen!")

@@ -79,9 +79,9 @@ def extractTemp(text, pos):
 def raisAlarm(tempList, threshold):
   print tempList
   # check if only new values are higher
-  if tempList[0]>=threshold:
+  if tempList[-1]<=threshold:
     return False
-  return all(i>=threshold for i in tempList[1:])
+  return all(i<=threshold for i in tempList[0:-1])
 
 def clearAlarm(tempList, threshold):
   if tempList[-1]>=threshold:
