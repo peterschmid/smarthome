@@ -20,7 +20,7 @@ if [ -n "$LEVEL_CM" ]; then
 fi
 
 # check level and send mail
-./waterlevelNotify.py
+./waterlevelNotify.py $FILENAME
 
 #send level value to ubidots skript
 #./sendtoubidots.py $LEVEL_CM
