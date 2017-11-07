@@ -38,3 +38,5 @@ cp index.html /var/www/
 # send mail
 ./notify.py $FILENAME
 
+# write to display
+./LcdAny.bin 2 Vorlauf $TEMP_FLOOR_IN_2 C

@@ -22,5 +22,8 @@ fi
 # check level and send mail
 ./waterlevelNotify.py $FILENAME
 
+# send value to display
+./LcdAny.bin 1 Wasserstand $LEVEL_CM cm
+
 #send level value to ubidots skript
 #./sendtoubidots.py $LEVEL_CM
