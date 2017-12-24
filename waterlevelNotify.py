@@ -13,11 +13,11 @@ def readFromMailAdrAndPwAndToMailAdr():
   f=open("mail.txt", "r")
   content = f.readlines()
   content = [x.strip('\n') for x in content]
-  return content[0], content[1], content[2]
+  return content[0], content[1], content[2], content[3]
 
 def sendMail(sub, text):
   # Prepare sending Mail and credentians
-  fromaddr, password, toaddr =  readFromMailAdrAndPwAndToMailAdr()
+  fromaddr, password, toaddr, toaddr2 =  readFromMailAdrAndPwAndToMailAdr()
   username = fromaddr
 
   # Create message
@@ -28,6 +28,7 @@ def sendMail(sub, text):
   server.starttls()
   server.login(username,password)
   server.sendmail(fromaddr, toaddr, msg)
+  server.sendmail(fromaddr, toaddr2, msg)
   server.quit()
 
 def tail( filename, lines=20 ):
