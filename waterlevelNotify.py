@@ -191,13 +191,13 @@ if isTrendFalling(trend):
 
 if (len(levels)>valuesToCheck and raisAlarm(levels, levelThreshold)):
   #print "Send Mail above " + str(levelThreshold)
-  sendMail("Wasser Warnung " + str(levelThreshold) + "cm", "Achtung der Wasserpegel ist aktuell auf " + str(max(levels)) + "cm angestiegen!")
+  sendMail("Wasserwarnung " + str(levelThreshold) + "cm", "Achtung der Wasserpegel ist aktuell auf " + str(max(levels)) + "cm angestiegen!")
   # only store threshold if mail is sent successfully
   storeThreshold(levelThreshold)
   
 if (len(levels)>valuesToCheck and clearAlarm(levels, levelThreshold)):
   #print "Send Mail below " + str(levelThreshold)
-  sendMail("Wasser Entwarnung " + str(levelThreshold) + "cm", "Der Wasserpegel ist wieder unter " + str(min(levels)) + " cm gesunken.")
+  sendMail("Wasserentwarnung " + str(levelThreshold) + "cm", "Der Wasserpegel ist wieder unter " + str(min(levels)) + " cm gesunken.")
   # only store threshold if mail is sent successfully
   storeThreshold(levelThreshold)
 
