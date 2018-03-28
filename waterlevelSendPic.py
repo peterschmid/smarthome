@@ -31,7 +31,8 @@ def sendMail(sub, text, filename):
   
   msg.attach(MIMEText(text))
   fp = open(filename, 'rb')
-  image = MIMEImage(fp.read(), filename)
+  image = MIMEImage(fp.read(),'png')
+  image.add_header('Content-Disposition', 'attachment', filename=filename)
   fp.close()
   msg.attach(image)
 
