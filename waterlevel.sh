@@ -27,3 +27,11 @@ fi
 
 #send level value to ubidots skript
 #./sendtoubidots.py $LEVEL_CM
+
+# write web page
+sed -i '10d' index.html
+sed -i "10i\
+<h3>$LEVEL_CM cm</h3>
+" index.html
+#cp index.html /var/www/
+

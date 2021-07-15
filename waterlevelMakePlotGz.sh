@@ -27,7 +27,7 @@ then
     mv $OUTFILE /var/www/graph/
 
     # write web page
-    sed -i "4i\
+    sed -i "40i\
     <p><img src=\"graph/$OUTFILE\" alt=\"$DATE\"></p>
     " index.html
     cp index.html /var/www/

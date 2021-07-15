@@ -23,13 +23,13 @@ TEMP_FLOOR_IN_2=$( echo "scale=3; $( grep 't=' /sys/bus/w1/devices/10-000802de52
 echo "$DATETIME;$TEMP_AIR_IN;$TEMP_AIR_OUT;$TEMP_FLOOR_IN;$TEMP_FLOOR_OUT;$TEMP_SOL_UP;$TEMP_SOL_DOWN;$TEMP_WARM_WATER;$TEMP_FLOOR_IN_2" >> $FILENAME
 
 #create html table
-HTMLTABLE="<table style=\"width:100%\"> <tr><td>FloorIn</td><td>$TEMP_FLOOR_IN</td></tr> <tr><td>FloorOut</td><td>$TEMP_FLOOR_OUT</td></tr> <tr><td>SolarUp</td><td>$TEMP_SOL_UP</td></tr>  <tr><td>SolarDown</td><td>$TEMP_SOL_DOWN</td></tr>  <tr><td>WarmWater</td><td>$TEMP_WARM_WATER</td></tr>  </table>"
+HTMLTABLE="<table style=\"width:100%\"> <tr><td>FloorIn</td><td>$TEMP_FLOOR_IN\&deg;C</td></tr> <tr><td>FloorOut</td><td>$TEMP_FLOOR_OUT\&deg;C</td></tr> <tr><td>SolarUp</td><td>$TEMP_SOL_UP\&deg;C</td></tr>  <tr><td>SolarDown</td><td>$TEMP_SOL_DOWN\&deg;C</td></tr>  <tr><td>WarmWater</td><td>$TEMP_WARM_WATER\&deg;C</td></tr>  </table>"
 
 #echo "$HTMLTABLE"
 
 #update html table
-sed -i '3d' index.html
-sed -i "3i\
+sed -i '20d' index.html
+sed -i "20i\
 $HTMLTABLE
 " index.html
 #copy homepage
