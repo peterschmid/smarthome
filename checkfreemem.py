@@ -28,6 +28,7 @@ def sendMail(sub, text):
   server.quit()
 
 freeBytes = getFreeMemInBytes()
+#print(freeBytes)
 # send warning mail if free mem less than 1GB
 if freeBytes < 1000000000:
   sendMail("Out of Memory Warning!", "Actual free memory is: "+str(freeBytes)+" Bytes")

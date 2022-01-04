@@ -1,17 +1,15 @@
 #!/usr/bin/python
 
-import sys, smtplib
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
-from email.MIMEImage import MIMEImage
+import sys, smtplib, imghdr, email.utils
+from email.message import EmailMessage
 
 
 if len(sys.argv) != 2:
-    print "Use first Argument as picture file name"
+    print ("Use first Argument as picture file name")
     sys.exit(0)
 filenamePic = str(sys.argv[1])
 
-#print filenameData
+#print (filenameData)
 def readFromMailAdrAndPwAndToMailAdr():
   f=open("mail.txt", "r")
   content = f.readlines()
@@ -24,17 +22,17 @@ def sendMail(sub, text, filename):
   username = fromaddr
 
   # Create the root message and fill in the from, to, and subject headers
-  msg = MIMEMultipart()
+  msg = EmailMessage()
   msg['Subject'] = sub
   msg['From'] = fromaddr
   msg['To'] = toaddr
-  
-  msg.attach(MIMEText(text))
+  msg['Date'] = email.utils.formatdate(localtime=True)
+  msg.set_content(text)
+
   fp = open(filename, 'rb')
-  image = MIMEImage(fp.read(),'png')
-  image.add_header('Content-Disposition', 'attachment', filename=filename)
+  image = fp.read()
   fp.close()
-  msg.attach(image)
+  msg.add_attachment(image, maintype='image', subtype=imghdr.what(None, image), filena>
 
   # The actual mail send
   server = smtplib.SMTP('smtp.gmail.com:587')

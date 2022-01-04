@@ -39,4 +39,4 @@ except ValueError:
 if waterlevel < 50 or waterlevel > 160:
     sendMail("Wasserlevel Fehler!", "Achtung, der gelesene Messwert (" +str(waterlevel)+ ") ist nicht im Bereich >50 <160!")
 else:
-    print "All OK: " + str(waterlevel)
+    print("All OK: " + str(waterlevel))

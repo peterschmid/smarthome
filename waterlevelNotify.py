@@ -3,10 +3,10 @@
 # This skrip sends warning mails based on detected water level matching defined thresholds.
 # First implementation was based on the last few lines of the data.csv file
 # Second implementation stores the last threshold in a temp file
-import sys, smtplib
+import sys, smtplib, subprocess
 
 if len(sys.argv) != 2:
-    print "Use first Argument as data file name"
+    print("Use first Argument as data file name")
     sys.exit(0)
 filenameData = str(sys.argv[1])
 
@@ -57,32 +57,8 @@ def sendMail(sub, text):
   server.quit()
 
 def tail( filename, lines=20 ):
-    total_lines_wanted = lines
-
-    f = open(filename, "r")
-    BLOCK_SIZE = 1024
-    f.seek(0, 2)
-    block_end_byte = f.tell()
-    lines_to_go = total_lines_wanted
-    block_number = -1
-    blocks = [] # blocks of size BLOCK_SIZE, in reverse order starting
-                # from the end of the file
-    while lines_to_go > 0 and block_end_byte > 0:
-        if (block_end_byte - BLOCK_SIZE > 0):
-            # read the last block we haven't yet read
-            f.seek(block_number*BLOCK_SIZE, 2)
-            blocks.append(f.read(BLOCK_SIZE))
-        else:
-            # file too small, start from begining
-            f.seek(0,0)
-            # only read what was not read
-            blocks.append(f.read(block_end_byte))
-        lines_found = blocks[-1].count('\n')
-        lines_to_go -= lines_found
-        block_end_byte -= BLOCK_SIZE
-        block_number -= 1
-    all_read_text = ''.join(reversed(blocks))
-    return '\n'.join(all_read_text.splitlines()[-total_lines_wanted:])
+    output = subprocess.check_output(['tail', '-n', str(lines), filename])
+    return output.decode('ascii')
 
 def toNumbers(values):
     values2 = []
@@ -98,7 +74,7 @@ def extractLevels(text, pos):
   values = []
   for line in lines:
     if line:
-        values.append(line.split(';')[pos]) 
+        values.append(line.split(';')[pos])
   return values
 
 def raisAlarm(valList, threshold):
@@ -117,7 +93,7 @@ def calculateThreshold(level, isTrendRising):
   # calcualte threshold based on level
   threshold = startingThreshold
   # threshold array [rising threshold, falling threshold]
-  thresholds = [[80,75],[90,85],[100,95],[110,105],[120,115],[130,125],[140,135],[150,145],[160,155],[170,165]]
+  thresholds = [[70,65],[80,75],[90,85],[100,95],[110,105],[120,115],[130,125],[140,135],[150,145],[160,155],[170,165]]
   if isTrendRising:
     for values in thresholds:
       if level >= values[0]:
@@ -190,13 +166,13 @@ if isTrendFalling(trend):
   levelThreshold = calculateThreshold(levels[-1], False)
 
 if (len(levels)>valuesToCheck and raisAlarm(levels, levelThreshold)):
-  #print "Send Mail above " + str(levelThreshold)
+  #print("Send Mail above " + str(levelThreshold))
   sendMail("Wasserwarnung " + str(levelThreshold) + "cm", "Achtung der Wasserpegel ist aktuell auf " + str(max(levels)) + "cm angestiegen!")
   # only store threshold if mail is sent successfully
   storeThreshold(levelThreshold)
-  
+
 if (len(levels)>valuesToCheck and clearAlarm(levels, levelThreshold)):
-  #print "Send Mail below " + str(levelThreshold)
+  #print("Send Mail below " + str(levelThreshold))
   sendMail("Wasserentwarnung " + str(levelThreshold) + "cm", "Der Wasserpegel ist wieder unter " + str(min(levels)) + " cm gesunken.")
   # only store threshold if mail is sent successfully
   storeThreshold(levelThreshold)

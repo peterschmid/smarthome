@@ -3,7 +3,7 @@
 import sys
 
 if len(sys.argv) != 2:
-    print "Use first Argument as data file name"
+    print ("Use first Argument as data file name")
     sys.exit(1)
 filenameData = str(sys.argv[1])
 

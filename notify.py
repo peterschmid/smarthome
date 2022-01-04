@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
-import sys, smtplib
+import sys, smtplib, subprocess
 
 if len(sys.argv) != 2:
-    print "Use first Argument as data file name"
+    print("Use first Argument as data file name")
     sys.exit(0)
 filenameData = str(sys.argv[1])
 
-#print filenameData
+#print(filenameData)
 
 def readFromMailAdrAndPwAndToMailAdr():
   f=open("mail.txt", "r")
@@ -32,32 +32,8 @@ def sendMail(sub, text):
   server.quit()
 
 def tail( filename, lines=20 ):
-    total_lines_wanted = lines
-
-    f = open(filename, "r")
-    BLOCK_SIZE = 1024
-    f.seek(0, 2)
-    block_end_byte = f.tell()
-    lines_to_go = total_lines_wanted
-    block_number = -1
-    blocks = [] # blocks of size BLOCK_SIZE, in reverse order starting
-                # from the end of the file
-    while lines_to_go > 0 and block_end_byte > 0:
-        if (block_end_byte - BLOCK_SIZE > 0):
-            # read the last block we haven't yet read
-            f.seek(block_number*BLOCK_SIZE, 2)
-            blocks.append(f.read(BLOCK_SIZE))
-        else:
-            # file too small, start from begining
-            f.seek(0,0)
-            # only read what was not read
-            blocks.append(f.read(block_end_byte))
-        lines_found = blocks[-1].count('\n')
-        lines_to_go -= lines_found
-        block_end_byte -= BLOCK_SIZE
-        block_number -= 1
-    all_read_text = ''.join(reversed(blocks))
-    return '\n'.join(all_read_text.splitlines()[-total_lines_wanted:])
+    output = subprocess.check_output(['tail', '-n', str(lines), filename])
+    return output.decode('ascii')
 
 def toNumbers(values):
     values2 = []
@@ -72,18 +48,21 @@ def extractTemp(text, pos):
   lines = text.split('\n')
   values = []
   for line in lines:
-    # fails if LF is at end of file
-    values.append(line.split(';')[pos]) 
+    #print (line)
+    elementsOfLine = line.split(';')
+    if len(elementsOfLine) > pos:
+        values.append(elementsOfLine[pos])
   return values
 
 def raisAlarm(tempList, threshold):
-  print tempList
-  # check if only new values are higher
-  if tempList[-1]<=threshold:
+  #print(tempList)
+  # check if only oldest value is lower
+  if tempList[0]>=threshold:
     return False
-  return all(i<=threshold for i in tempList[0:-1])
+  return all(i>=threshold for i in tempList[1:])
 
 def clearAlarm(tempList, threshold):
+  # check if only newest value is lower
   if tempList[-1]>=threshold:
     return False
   return all(i>=threshold for i in tempList[0:-1])
@@ -97,10 +76,14 @@ tempThreshold = 40
 
 tempStr =  extractTemp(tail(filenameData, valuesToCheck +3),posOfFloorInValue)
 temp = toNumbers(tempStr)
+#print (temp)
+#print (raisAlarm(temp, tempThreshold))
+#print (clearAlarm(temp, tempThreshold))
 alarm = len(temp)>valuesToCheck and raisAlarm(temp, tempThreshold)
 if alarm:
-  #print "Send Mail"
+  print("Send Mail")
   sendMail("Temperatur Warnung", "Achtung die Temperatur im Vorlauf ist " + str(max(temp)) + " Grad.")
 
 if (len(temp)>valuesToCheck and clearAlarm(temp, tempThreshold)):
   sendMail("Temperatur Entwarnung", "Die Temperatur im Vorlauf ist wieder unter " + str(tempThreshold) + " Grand gesunken.")
+

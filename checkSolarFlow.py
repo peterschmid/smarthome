@@ -2,7 +2,7 @@
 import sys, smtplib
 
 if len(sys.argv) != 2:
-    print "Use first Argument as data file name"
+    print("Use first Argument as data file name")
     sys.exit(0)
 filenameData = str(sys.argv[1])
 
@@ -90,7 +90,7 @@ def extractValues(text, pos):
     if line:
       splitLine = line.split(';')
       if len(splitLine)-1 < pos:
-        print "Error accessing index " + str(pos) +" in list, Content: " + line
+        print("Error accessing index " + str(pos) +" in list, Content: " + line)
       else: 
         values.append(splitLine[pos]) 
   return values
@@ -115,11 +115,11 @@ solarDown = toNumbers(solarDownStr)
 avgSolarUp   = sum(solarUp)/len(solarUp)
 avgSolarDown = sum(solarDown)/len(solarDown)
 
-#print "Detected Temp diff between avgSolUp and avgSolDown: " + str(avgSolarUp - avgSolarDown)
+#print("Detected Temp diff between avgSolUp and avgSolDown: " + str(avgSolarUp - avgSolarDown))
 
 # if difference between up and down average is higher than 3 degrade Celsius
 if (avgSolarUp - avgSolarDown) > waringThreshold:
-  #print "Temp diff detected in file: " + filenameData
+  #print("Temp diff detected in file: " + filenameData)
   #send mail
   sendMail("Warning: Solar flow blocked", "Average temp up is warmer than average temp down. Go check the flow meter, it's possibly jamed.")
 

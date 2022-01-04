@@ -5,7 +5,7 @@
 import sys, tarfile, tempfile, os
 
 if len(sys.argv) != 2:
-    print "Use first Argument as test data file name (gz)"
+    print ("Use first Argument as test data file name (gz)")
     sys.exit(0)
 filenameTestData = str(sys.argv[1])
 
@@ -32,7 +32,7 @@ for tarinfo in tar:
             ret = os.system("./waterlevelNotifyTest.py" + " " + tempFile.name)
             #os.system("tail" + " " + tempFile.name)
             if ret != 0:
-                print line
+                print (line)
 
 # clean up
 tar.close()
