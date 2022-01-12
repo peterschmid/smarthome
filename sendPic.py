@@ -32,7 +32,7 @@ def sendMail(sub, text, filename):
   fp = open(filename, 'rb')
   image = fp.read()
   fp.close()
-  msg.add_attachment(image, maintype='image', subtype=imghdr.what(None, image), filena>
+  msg.add_attachment(image, maintype='image', subtype=imghdr.what(None, image), filename=filename)
 
   # The actual mail send
   server = smtplib.SMTP('smtp.gmail.com:587')
