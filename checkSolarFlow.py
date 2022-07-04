@@ -1,19 +1,12 @@
 #!/usr/bin/python
-import sys, smtplib, subprocess
+
+import sys, subprocess
+from sendMail import sendSingelTextMail
 
 if len(sys.argv) != 2:
     print("Use first Argument as data file name")
     sys.exit(0)
 filenameData = str(sys.argv[1])
-
-# Read file with format: from address, password, to address
-def getMailData():
-  l = []
-  with open("mail.txt", "r") as f:
-    lines = (line.strip() for line in f) # All lines including the blank ones
-    lines = (line for line in lines if line) # Non-blank lines
-    l = list(lines) # convert generator to list
-  return l[0], l[1], l[2]
 
 filenameStoreThreshold = "/tmp/waterlevelThreshold.txt"
 
@@ -30,21 +23,6 @@ def getStoredThreshold():
   except IOError:
     pass
   return lastThreshold
-
-def sendMail(sub, text):
-  # Prepare sending Mail and credentians
-  fromaddr, password, toaddr =  getMailData()
-  username = fromaddr
-
-  # Create message
-  msg = 'Subject: %s\n\n%s' % (sub, text)
-
-  # The actual mail send
-  server = smtplib.SMTP('smtp.gmail.com:587')
-  server.starttls()
-  server.login(username,password)
-  server.sendmail(fromaddr, toaddr, msg)
-  server.quit()
 
 def tail( filename, lines=20 ):
     output = subprocess.check_output(['tail', '-n', str(lines), filename])
@@ -97,5 +75,5 @@ avgSolarDown = sum(solarDown)/len(solarDown)
 if (avgSolarUp - avgSolarDown) > waringThreshold:
   #print("Temp diff detected in file: " + filenameData)
   #send mail
-  sendMail("Warning: Solar flow blocked", "Average temp up is warmer than average temp down. Go check the flow meter, it's possibly jamed.")
+  sendSingelTextMail("Warning: Solar flow blocked", "Average temp up is warmer than average temp down. Go check the flow meter, it's possibly jamed.")
 

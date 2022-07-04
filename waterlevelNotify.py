@@ -3,21 +3,13 @@
 # This skrip sends warning mails based on detected water level matching defined thresholds.
 # First implementation was based on the last few lines of the data.csv file
 # Second implementation stores the last threshold in a temp file
-import sys, smtplib, subprocess
+import sys, subprocess
+from sendMail import sendTextMail
 
 if len(sys.argv) != 2:
     print("Use first Argument as data file name")
     sys.exit(0)
 filenameData = str(sys.argv[1])
-
-# Read file with format: from address, password, to address1, to address2...
-def getMailData():
-  l = []
-  with open("mail.txt", "r") as f:
-    lines = (line.strip() for line in f) # All lines including the blank ones
-    lines = (line for line in lines if line) # Non-blank lines
-    l = list(lines) # convert generator to list
-  return l[0], l[1], l[2:]
 
 filenameStoreThreshold = "/tmp/waterlevelThreshold.txt"
 
@@ -39,22 +31,6 @@ def storeThreshold(threshold):
   f=open(filenameStoreThreshold, "w+")
   f.write(str(threshold))
   f.close()
-
-def sendMail(sub, text):
-  # Prepare sending Mail and credentians
-  fromaddr, password, toaddrList =  getMailData()
-  username = fromaddr
-
-  # Create message
-  msg = 'Subject: %s\n\n%s' % (sub, text)
-
-  # The actual mail send
-  server = smtplib.SMTP('smtp.gmail.com:587')
-  server.starttls()
-  server.login(username,password)
-  for toaddr in toaddrList:
-    server.sendmail(fromaddr, toaddr, msg)
-  server.quit()
 
 def tail( filename, lines=20 ):
     output = subprocess.check_output(['tail', '-n', str(lines), filename])
@@ -167,13 +143,13 @@ if isTrendFalling(trend):
 
 if (len(levels)>valuesToCheck and raisAlarm(levels, levelThreshold)):
   #print("Send Mail above " + str(levelThreshold))
-  sendMail("Wasserwarnung " + str(levelThreshold) + "cm", "Achtung der Wasserpegel ist aktuell auf " + str(max(levels)) + "cm angestiegen!")
+  sendTextMail("Wasserwarnung " + str(levelThreshold) + "cm", "Achtung der Wasserpegel ist aktuell auf " + str(max(levels)) + "cm angestiegen!")
   # only store threshold if mail is sent successfully
   storeThreshold(levelThreshold)
 
 if (len(levels)>valuesToCheck and clearAlarm(levels, levelThreshold)):
   #print("Send Mail below " + str(levelThreshold))
-  sendMail("Wasserentwarnung " + str(levelThreshold) + "cm", "Der Wasserpegel ist wieder unter " + str(min(levels)) + " cm gesunken.")
+  sendTextMail("Wasserentwarnung " + str(levelThreshold) + "cm", "Der Wasserpegel ist wieder unter " + str(min(levels)) + " cm gesunken.")
   # only store threshold if mail is sent successfully
   storeThreshold(levelThreshold)
 
