@@ -1,35 +1,12 @@
 #!/usr/bin/python
 
-import sys, smtplib, subprocess
+import sys, subprocess
+from sendMail import sendSingelTextMail
 
 if len(sys.argv) != 2:
     print("Use first Argument as data file name")
     sys.exit(0)
 filenameData = str(sys.argv[1])
-
-#print(filenameData)
-
-def readFromMailAdrAndPwAndToMailAdr():
-  f=open("mail.txt", "r")
-  content = f.readlines()
-  content = [x.strip('\n') for x in content]
-  return content[0], content[1], content[2]
-
-def sendMail(sub, text):
-  # Prepare sending Mail and credentians
-  fromaddr, password, toaddr =  readFromMailAdrAndPwAndToMailAdr()
-  username = fromaddr
-
-  #sub = 'Temperaturwarung'
-  #text = 'Die Temperatur ist zu hoch!'
-  msg = 'Subject: %s\n\n%s' % (sub, text)
-
-  # The actual mail send
-  server = smtplib.SMTP('smtp.gmail.com:587')
-  server.starttls()
-  server.login(username,password)
-  server.sendmail(fromaddr, toaddr, msg)
-  server.quit()
 
 def tail( filename, lines=20 ):
     output = subprocess.check_output(['tail', '-n', str(lines), filename])
@@ -81,9 +58,8 @@ temp = toNumbers(tempStr)
 #print (clearAlarm(temp, tempThreshold))
 alarm = len(temp)>valuesToCheck and raisAlarm(temp, tempThreshold)
 if alarm:
-  print("Send Mail")
-  sendMail("Temperatur Warnung", "Achtung die Temperatur im Vorlauf ist " + str(max(temp)) + " Grad.")
+  #print("Send Mail")
+  sendSingelTextMail("Temperatur Warnung", "Achtung die Temperatur im Vorlauf ist " + str(max(temp)) + " Grad.")
 
 if (len(temp)>valuesToCheck and clearAlarm(temp, tempThreshold)):
-  sendMail("Temperatur Entwarnung", "Die Temperatur im Vorlauf ist wieder unter " + str(tempThreshold) + " Grand gesunken.")
-
+  sendSingelTextMail("Temperatur Entwarnung", "Die Temperatur im Vorlauf ist wieder unter " + str(tempThreshold) + " Grand gesunken.")
