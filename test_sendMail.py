@@ -3,7 +3,7 @@
 import unittest
 import configparser
 import os
-from sendPicSun import readCofnigFile
+from sendMail import readCofnigFile
 
 testfilename = 'test.conf'
 
@@ -76,6 +76,15 @@ class TestConfigReader(unittest.TestCase):
     self.assertEqual(port, '1', "Should be 1")
     self.assertEqual(usr, 'tester', "Should be tester")
     self.assertEqual(pw, 'top secret', "Should be top secret")
+    self.assertEqual(toaddr, [])
+
+  def test_configparserNoCofnigFile(self):
+    smtpServer, port, usr, pw, toaddr = readCofnigFile('test.conf')
+
+    self.assertEqual(smtpServer, 'smtpserver', "Should be smtpserver")
+    self.assertEqual(port, 'port', "Should be port")
+    self.assertEqual(usr, 'usr', "Should be usr")
+    self.assertEqual(pw, 'pw', "Should be pw")
     self.assertEqual(toaddr, [])
 
 if __name__ == '__main__':

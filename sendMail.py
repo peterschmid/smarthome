@@ -1,4 +1,4 @@
-import smtplib, imghdr, email.utils
+import os, smtplib, imghdr, email.utils
 from email.message import EmailMessage
 import configparser
 
@@ -27,6 +27,10 @@ def readCofnigFile(configfilename):
   pw         = 'pw'
   toaddrList = []
  
+  if not os.path.isfile(configfilename):
+    print('Cofig File missing')
+    return smtpServer, port, usr, pw, toaddrList
+
   if serverSection in config:
     if smtpServer in config[serverSection]:
       smtpServer = config.get(serverSection, smtpServer)
