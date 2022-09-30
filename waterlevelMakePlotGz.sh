@@ -30,7 +30,7 @@ then
     sed -i "40i\
     <p><img src=\"graph/$OUTFILE\" alt=\"$DATE\"></p>
     " index.html
-    cp index.html /var/www/
+    #cp index.html /var/www/
 else
     # gzip
     tar -cjf $GZFILE $INFILE --remove-files

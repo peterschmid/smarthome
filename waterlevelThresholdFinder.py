@@ -19,7 +19,7 @@ for line in f:
         try:
             level = int(levelList[2])
             if threshold < level:
-                print "Interesting"
+                print ("Interesting")
                 # exit with success
                 sys.exit(0)
         except (ValueError):
