@@ -18,21 +18,24 @@ for tarinfo in tar:
     doFirstWriteHeader = True
     # add each line to temp file
     for line in testDataFile:
+        line = line.decode('utf-8')
         if doFirstWriteHeader:
             # write only header to file
-            tempFile.write(line)
+            tempFile.write(str(line))
             doFirstWriteHeader = False
         else:
             # go to end of file (needed to ensure proper file handling)
             tempFile.seek(0,2)
-            tempFile.write(line)
+            tempFile.write(str(line))
             # go to start of file (needed to ensure proper file handling)
-	    tempFile.seek(0)
+            tempFile.seek(0)
             # call the program to test
-            ret = os.system("./waterlevelNotifyTest.py" + " " + tempFile.name)
+            #print ("python3 waterlevelNotify.py" + " " + tempFile.name)
+            ret = os.system("python3 waterlevelNotify.py" + " " + tempFile.name)
             #os.system("tail" + " " + tempFile.name)
             if ret != 0:
                 print (line)
+        #input()
 
 # clean up
 tar.close()
