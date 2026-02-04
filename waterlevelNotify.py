@@ -26,7 +26,7 @@ filenameData = str(sys.argv[1])
 
 filenameStoreThreshold = "/tmp/waterlevelThreshold.txt"
 
-valuesToCheck = 8
+valuesToCheck = 3
 #[0]         [1]       [2]
 #Date;       Time;     Level
 #20.05.2017; 00:00:01; 62
@@ -52,26 +52,29 @@ if isTrendStable(trend):
 levelThreshold = 0
 
 if isTrendRising(trend):
-  levelThreshold = calculateThreshold(levels[-1], True)
+  levelThreshold = calculateThreshold(levels, True)
 
 if isTrendFalling(trend):
-  levelThreshold = calculateThreshold(levels[-1], False)
+  levelThreshold = calculateThreshold(levels, False)
 
 if (raisAlarm(levels, levelThreshold)):
-  #print("Send Mail above " + str(levelThreshold))
-  #print(levels)
+#  print("Send Mail above " + str(levelThreshold) + " @ " + extractLevels(tail(filenameData, 1), 1)[0])
+#  print(levels)
   sendTextMail("Wasserwarnung " + str(levelThreshold) + "cm", "Achtung der Wasserpegel ist aktuell auf " + str(max(levels)) + "cm angestiegen!")
   # only store threshold if mail is sent successfully
   storeThreshold(filenameStoreThreshold, levelThreshold)
 
 if (clearAlarm(levels, levelThreshold)):
-  #print("Send Mail below " + str(levelThreshold))
-  #print(levels)
+#  print("Send Mail below " + str(levelThreshold) + " @ " + extractLevels(tail(filenameData, 1), 1)[0])
+#  print(levels)
   sendTextMail("Wasserentwarnung " + str(levelThreshold) + "cm", "Der Wasserpegel ist wieder unter " + str(min(levels)) + " cm gesunken.")
   # only store threshold if mail is sent successfully
   storeThreshold(filenameStoreThreshold, levelThreshold)
 
+#print(levelThreshold)
+#print(levels)
+
 # set starting threshold if water is low
 if (levels[-1] <= startingThreshold) and (getStoredThreshold(filenameStoreThreshold) != startingThreshold):
-  #print("Store 60 threshold")
+  print("Store 60 threshold")
   storeThreshold(filenameStoreThreshold, startingThreshold)

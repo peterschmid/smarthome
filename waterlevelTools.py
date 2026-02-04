@@ -84,19 +84,20 @@ def clearAlarm(valList, threshold):
     return False
   return all(i>threshold for i in valList[0:-1])
 
-def calculateThreshold(level, isTrendRising):
-  # calcualte threshold based on level
+def calculateThreshold(levels, isTrendRising):
+  # calcualte threshold based on levels
   # threshold array [rising threshold, falling threshold]
   thresholds = [[70,65],[80,75],[90,85],[100,95],[110,105],[120,115],[130,125],[140,135],[150,145],[160,155],[170,165]]
+  avg = sum(levels)/float(len(levels))
   if isTrendRising:
     threshold = thresholds[-1][0]
     for values in reversed(thresholds):
-      if level <= values[0]:
+      if avg <= values[0]:
         threshold = values[0]
   else:
     threshold = thresholds[0][1]
     for values in thresholds:
-      if level >= values[1]:
+      if avg >= values[1]:
         threshold = values[1]
   return threshold
 
