@@ -88,7 +88,7 @@ def calculateThreshold(levels, isTrendRising):
   # calcualte threshold based on levels
   # threshold array [rising threshold, falling threshold]
   thresholds = [[70,65],[80,75],[90,85],[100,95],[110,105],[120,115],[130,125],[140,135],[150,145],[160,155],[170,165]]
-  avg = sum(levels)/float(len(levels))
+  avg = sum(levels[0:-1])/float(len(levels)-1)
   if isTrendRising:
     threshold = thresholds[-1][0]
     for values in reversed(thresholds):

@@ -275,6 +275,37 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(filterJumpsBigger10([60.0, 61.0, 62.0, 60.0, 61.0, 62.0, 60.0, 45.0]), [60.0, 61.0, 62.0, 60.0, 61.0, 62.0, 60.0, 59.0])
 
 
+    def test_bigJumpThreshold_rising(self):
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([69,69,69,103]), True), 70)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([69,69,103,101]), True), 90)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([69,103,101,102]), True), 100)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([103,101,102,101]), True), 110)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([103,101,102,149]), True), 120)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([101,102,149,150]), True), 130)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([102,149,150,151]), True), 140)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([149,150,151,152]), True), 150)
+
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([69,68,69,103]), True), 70)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([68,69,103,132]), True), 100)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([69,103,132,155]), True), 120)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([103,132,155,177]), True), 140)
+
+
+    def test_bigJumpThreshold_falling(self):
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([157,156,158,156]), False), 155)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([156,158,113,112]), False), 125)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([158,113,112,113]), False), 115)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([113,112,113,111]), False), 105)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([112,113,111,72]), False), 105)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([113,111,72,71]), False), 85)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([111,72,71,72]), False), 75)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([72,71,72,71]), False), 65)
+
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([157,156,158,119]), False), 145)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([156,158,119,96]), False), 125)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([158,119,96,73]), False), 105)
+        self.assertEqual(calculateThreshold(filterJumpsBigger10([119,96,73,59]), False), 85)
+
 #    def test_upper(self):
 #        self.assertEqual('foo'.upper(), 'FOO')
 
