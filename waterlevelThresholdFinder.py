@@ -18,7 +18,7 @@ for line in f:
     if 3 >= len(levelList):
         try:
             level = int(levelList[2])
-            if threshold < level:
+            if threshold <= level:
                 print ("Interesting")
                 # exit with success
                 sys.exit(0)
